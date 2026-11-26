@@ -3,3 +3,8 @@ drive_downloads/
 drive_downloader.code-workspace
 credentials.json
 token.json
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
