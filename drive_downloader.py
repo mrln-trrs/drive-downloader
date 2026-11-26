@@ -505,6 +505,8 @@ def main():
                         help="Use the official Google Drive API for downloads (requires credentials.json and token.json).")
     parser.add_argument("--serve", action="store_true",
                         help="Run the script as a FastAPI server.")
+    parser.add_argument("--host", type=str, default="127.0.0.1",
+                        help="Host for the FastAPI server (default: 127.0.0.1). Use 0.0.0.0 only on trusted networks: the API has no authentication.")
     parser.add_argument("--port", type=int, default=8000,
                         help="Port for the FastAPI server (default: 8000).")
     args = parser.parse_args()
@@ -541,7 +543,7 @@ def main():
         return
 
     if args.serve:
-        logger.info(f"Starting FastAPI server on http://0.0.0.0:{args.port}")
+        logger.info(f"Starting FastAPI server on http://{args.host}:{args.port}")
         # Pass arguments and global states to FastAPI app state
         app.state.download_summary_data = global_download_summary_data
         app.state.failed_original_links = global_failed_original_links
@@ -632,7 +634,7 @@ def main():
                     raise HTTPException(status_code=500, detail=f"Error reading summary file: {e}")
             raise HTTPException(status_code=404, detail="Download summary not found.")
 
-        uvicorn.run(app, host="0.0.0.0", port=args.port)
+        uvicorn.run(app, host=args.host, port=args.port)
         return
 
     drive_links = []
